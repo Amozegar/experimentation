@@ -1,0 +1,69 @@
+# read in a data file with 2 response categories
+deviceprefs = read.csv("ADDRESS")
+View(deviceprefs)
+deviceprefs$Subject = factor(deviceprefs$Subject) # convert to nominal factor
+deviceprefs$Pref = factor(deviceprefs$Pref) # Rv4
+summary(deviceprefs)
+plot(deviceprefs$Pref)
+
+
+# Pearson chi-square test
+prfs = xtabs( ~ Pref, data=deviceprefs)
+prfs # show counts
+chisq.test(prfs)
+
+# binomial test
+binom.test(prfs)
+
+# read in a data file with 3 response categories
+deviceprefs = read.csv("ADDRESS")
+View(deviceprefs)
+deviceprefs$Subject = factor(deviceprefs$Subject) # convert to nominal factor
+deviceprefs$Pref = factor(deviceprefs$Pref) # Rv4
+summary(deviceprefs)
+plot(deviceprefs$Pref)
+
+# Pearson chi-square test
+prfs = xtabs( ~ Pref, data=deviceprefs)
+prfs # show counts
+chisq.test(prfs)
+
+# post hoc binomial tests with correction for multiple comparisons
+aa = binom.test(sum(deviceprefs$Pref == "trackball"), nrow(deviceprefs), p=1/2)
+bb = binom.test(sum(deviceprefs$Pref == "touchpad"), nrow(deviceprefs), p=1/2)
+p.adjust(c(aa$p.value, bb$p.value), method="holm")
+
+# revisit our data file with 2 response categories, but now with sex (M/F)
+deviceprefs = read.csv("ADDRESS")
+View(deviceprefs)
+deviceprefs$Subject = factor(deviceprefs$Subject) # convert to nominal factor
+deviceprefs$Pref = factor(deviceprefs$Pref) # Rv4
+deviceprefs$Disability = factor(deviceprefs$Disability) # Rv4
+summary(deviceprefs)
+plot(deviceprefs[deviceprefs$Disability == "0",]$Pref)
+plot(deviceprefs[deviceprefs$Disability == "1",]$Pref)
+
+# Pearson chi-square test
+prfs = xtabs( ~ Pref + Disability, data=deviceprefs) # the '+' sign indicates two vars
+View(prfs)
+chisq.test(prfs)
+
+# Fisher's exact test
+fisher.test(prfs)
+
+# revisit our data file with 2 response categories, but now with Disability (0/1)
+deviceprefs = read.csv("ADDRESS")
+View(deviceprefs)
+deviceprefs$Subject = factor(deviceprefs$Subject) # convert to nominal factor
+deviceprefs$Pref = factor(deviceprefs$Pref) # Rv4
+deviceprefs$Disability = factor(deviceprefs$Disability) # Rv4
+summary(deviceprefs)
+plot(deviceprefs[deviceprefs$Disability == "0",]$Pref)
+plot(deviceprefs[deviceprefs$Disability == "1",]$Pref)
+
+
+# manual post hoc binomial tests
+
+binom.test(sum(deviceprefs[deviceprefs$Disability == "0",]$Pref == "touchpad"), nrow(deviceprefs[deviceprefs$Disability == "0",]), p=1/2)
+
+binom.test(sum(deviceprefs[deviceprefs$Disability == "1",]$Pref == "touchpad"), nrow(deviceprefs[deviceprefs$Disability == "1",]), p=1/2)
